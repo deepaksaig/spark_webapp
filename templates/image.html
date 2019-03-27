@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<style>
+    form {
+        margin: auto;
+        width: 35%;
+    }
+
+    .result {
+        margin: auto;
+        width: 35%;
+        border: 1px solid #ccc;
+    }
+</style>
+
+<head>
+    <title>Image Graph</title>
+</head>
+<form action="{{ url_for('index') }}" method="POST">
+    <fieldset>
+        <legend> Enter movie name: </legend>
+        MovieName :
+        <input name="MovieName" type="text" required>
+        <br>
+        <br>
+        <input type="submit">
+    </fieldset>
+
+</form>
+
+<body>
+<img src="{{ user_image }}" alt="User Image">
+</body>

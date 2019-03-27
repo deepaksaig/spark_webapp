@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<style>
+    form {
+        margin: auto;
+        width: 35%;
+    }
+
+    .result {
+        margin: auto;
+        width: 35%;
+        border: 1px solid #ccc;
+    }
+</style>
+
+<head>
+    <title>Bike Usage Model</title>
+</head>
+<form action="{{ url_for('review') }}" method="POST">
+    <fieldset>
+        <legend>Enter the movie name:</legend>
+        name:
+        <input name="name" type="text" required>
+        <br>
+        <br>
+        <input type="submit">
+    </fieldset>
+</form>
