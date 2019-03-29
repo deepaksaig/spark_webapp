@@ -60,16 +60,21 @@ def review():
         sentiment = [x[2] for x in movie_details.toLocalIterator()]
         imdb_rating = float(rating[0])
         sentiment1 = float(sentiment[0])
-        rating_per = imdb_rating * 10
-        rating_agr = 100 - rating_per
+        rating_per = (imdb_rating * 10)
+        rating_agr = (100 - rating_per)
         print(imdb_rating)
         print(rating_per)
         print(rating_agr)
         print(sentiment)
+        s1= str(rating_per)
+        s2 = str(rating_agr)
         if sentiment1 == 1:
             example = ("THE REVIEW ANALYSIS OF THE MOVIE CAME OUT TO BE POSITIVE")
         else:
             example = ("THE REVIEW ANALYSIS OF THE MOVIE CAME OUT TO BE NEGATIVE")
+
+        example1 = str(s1 + " CAME OUT TO BE POSITIVE")
+        example2 = str(s2 +  " CAME OUT TO BE NEGATIVE")
         labels = 'Positive', 'Negative'
         sizes = [rating_per, rating_agr]
         explode = (0.2, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
@@ -79,7 +84,8 @@ def review():
                 shadow=True, startangle=0)
         ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         plt.savefig('static/download.png')
-        return example
+        list = [example,example1,example2]
+        return list
 
     if flask.request.method == 'GET':
         # Just render the initial form, to get input
@@ -89,9 +95,12 @@ def review():
         # Extract the input
         name = flask.request.form['name']
         moviereview(name)
-        message = moviereview(name)
+        list1 = moviereview(name)
+        message = list1[0]
+        message2 = list1[1]
+        message3 = list1[2]
 
-    return flask.render_template('index.html',Result = message)
+    return flask.render_template('index.html',Result = message,Result2 = message2,Result3 = message3,name = name )
 
 
 
@@ -225,16 +234,14 @@ def main():
             return model
 
         themodel = RNNModel(lstm)
-        weights_path = "F:\Sentiment-Analysis-IMDb-Movie-Review\model.h5"
+        weights_path = "F:\spark-webapp\model.h5"
         themodel.load_weights(weights_path)
         themodel.summary()
 
         ytest_prediction = themodel.predict(x_test)
 
         ytest_prediction = np.array(ytest_prediction).reshape((1,))
-        for i in range(len(ytest_prediction)):
-            ytest_prediction[i] = round(ytest_prediction[i])
-        ytest_prediction = ytest_prediction.astype(int)
+
 
         # Copy the predicted values to pandas dataframe with an id column, and a sentiment column.
         output = pd.DataFrame(data={"sentiment": ytest_prediction})
@@ -245,11 +252,12 @@ def main():
         predictionvalue = pd.read_csv("prediction.csv", delimiter="\t")
         prediction = predictionvalue['sentiment'].iloc[0]
         print(prediction)
-
-        if prediction == 1:
+        if prediction > 0.50:
             value = "pos"
-        else:
+        elif prediction < 0.49:
             value = "neg"
+        else:
+            value = "neutral"
 
         # Render the form again, but add in the prediction and remind user
         # of the values they input before
